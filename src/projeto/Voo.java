@@ -3,6 +3,7 @@ package projeto;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 public class Voo {
     protected String origem;
@@ -100,12 +101,21 @@ public class Voo {
         //OffsetDateTime  = OffsetDateTime.now(zoneOffset);
 //        OffsetDateTime partidaFuso = partida.withFixedOffsetZone().toOffsetDateTime().with(zoneOffset);
 //        OffsetDateTime chegadaFuso = chegada.withFixedOffsetZone().toOffsetDateTime().with(zoneOffset);
-//        ZonedDateTime partidaFuso = partida.withZoneSameLocal(ZoneId.of("America/Sao_Paulo"));
-//        ZonedDateTime chegadaFuso = chegada.withZoneSameLocal(ZoneId.of("America/Sao_Paulo"));
+        ZonedDateTime partidaFuso = partida.withZoneSameLocal(ZoneId.of("America/Sao_Paulo"));
+       ZonedDateTime chegadaFuso = chegada.withZoneSameLocal(ZoneId.of("America/Sao_Paulo"));
 
 //        duracaoTeste = partidaFuso.until(chegadaFuso, ChronoUnit.HOURS);
         duracao = partida.until(chegada, ChronoUnit.HOURS);
 //        System.out.println(partidaFuso+", "+ chegadaFuso+ " - "+duracaoTeste+" horas");
         System.out.println(this.partida+", "+ this.chegada+ " - "+duracao+" horas\n");
+    }
+
+    public void calculaDuracaoMedia(List<Voo> voo){
+        long duracaoMedia;
+        long duracao;
+
+
+
+
     }
 }
