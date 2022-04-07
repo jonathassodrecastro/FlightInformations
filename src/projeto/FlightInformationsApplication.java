@@ -40,10 +40,11 @@ public class FlightInformationsApplication {
                                 .collect(Collectors.toList());
 
 
-        System.out.println(voosOrigemDestino);
+//        System.out.println(voosOrigemDestino);
 
-
-
+        voosOrigemDestino.forEach(System.out::println);
+        System.out.println("------------- teste metodo ---------------");
+        voosOrigemDestino.forEach(Voo::calculaDuracao);
 
 //        GerenciadorDeArquivo gerenciadorDeArquivo = new GerenciadorDeArquivoJavaIO();
 //

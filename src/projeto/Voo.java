@@ -1,8 +1,6 @@
 package projeto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
@@ -89,9 +87,25 @@ public class Voo {
                 '}';
     }
 
-    public long calculaDuracao(ZonedDateTime partida, ZonedDateTime chegada){
+    public static long calculaDuracao(ZonedDateTime partida, ZonedDateTime chegada){
         long duracao;
         duracao = partida.until(chegada, ChronoUnit.HOURS);
         return duracao;
+    }
+
+    public void calculaDuracao() {
+        long duracao;
+        long duracaoTeste;
+        ZoneOffset zoneOffset = ZoneOffset.of("-03:00");
+        //OffsetDateTime  = OffsetDateTime.now(zoneOffset);
+//        OffsetDateTime partidaFuso = partida.withFixedOffsetZone().toOffsetDateTime().with(zoneOffset);
+//        OffsetDateTime chegadaFuso = chegada.withFixedOffsetZone().toOffsetDateTime().with(zoneOffset);
+        ZonedDateTime partidaFuso = partida.withZoneSameLocal(ZoneId.of("America/Sao_Paulo"));
+        ZonedDateTime chegadaFuso = chegada.withZoneSameLocal(ZoneId.of("America/Sao_Paulo"));
+
+        duracaoTeste = partidaFuso.until(chegadaFuso, ChronoUnit.HOURS);
+        duracao = partida.until(chegada, ChronoUnit.HOURS);
+        System.out.println(partidaFuso+", "+ chegadaFuso+ " - "+duracaoTeste+" horas");
+        System.out.println(this.partida+", "+ this.chegada+ " - "+duracao+" horas\n");
     }
 }
