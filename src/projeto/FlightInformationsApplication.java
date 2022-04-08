@@ -1,7 +1,13 @@
 package projeto;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.*;
+import static org.junit.Assert.assertTrue;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
@@ -12,9 +18,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static kotlin.test.AssertionsKt.assertTrue;
+
 public class FlightInformationsApplication {
 
-    public static void main(String[] args) {
+  private static final String CSV_FILE_NAME = "C:\\Java\\FlightInformations\\";
+
+  public static void main(String[] args) throws IOException {
       Voo vooObjeto = new Voo();
 
         List<Voo> voos = List.of(
@@ -26,6 +36,10 @@ public class FlightInformationsApplication {
                 new Voo("GRU-Brasil","LIS-Portugal","Emirates","11/04/2022 16:00:00 (-02:00)","12/04/2022 12:00:00 (-02:00)",4539.00),
                 new Voo("GRU-Brasil","KIN-Jamaica","LATAM Airlines","09/04/2022 07:00:00 (-12:00)","09/04/2022 18:00:00 (-05:00)",2006.00)
         );
+
+        List<String> imprimeVoo = new ArrayList<>();
+
+
 
 
         List<Voo> voosOrigemDestino =
@@ -60,6 +74,7 @@ public class FlightInformationsApplication {
         Optional<Voo> vooMaisRapido = voosOrigemDestino.stream()
                         .min(Comparator.comparing(Voo::calculaDuracao));
 
+        imprimeVoo.add(vooMaisRapido.orElse(null).toString());
 
         System.out.println("\nPrintando vooMaisRapido:");
         System.out.println(vooMaisRapido.orElse(null));
@@ -72,7 +87,10 @@ public class FlightInformationsApplication {
         Optional<Voo> vooMaisLongo = voosOrigemDestino.stream()
                 .max(Comparator.comparing(Voo::calculaDuracao));
 
-        System.out.println("\nO Voo mais longo nesse percurso é:");
+        imprimeVoo.add(vooMaisLongo.toString());
+
+
+      System.out.println("\nO Voo mais longo nesse percurso é:");
         System.out.println(vooMaisLongo);
 
 
@@ -80,23 +98,48 @@ public class FlightInformationsApplication {
       double duracaoMedia = voosOrigemDestino.stream()
               .mapToLong(Voo::calculaDuracao).average().getAsDouble();
 
+      String mediaDaDuracao = ("Média da duração:" + duracaoMedia + " horas");
+      imprimeVoo.add(mediaDaDuracao);
 
-        System.out.println("\nMédia da duração: " + duracaoMedia + " horas");
+      System.out.println("\nMédia da duração: " + duracaoMedia + " horas");
 
         OptionalDouble preco = voosOrigemDestino.stream()
                 .mapToDouble(Voo::getPreco).average();
 
         double precoMedio = preco.getAsDouble();
 
+
+      String mediaDoPreco = ("Média da preco: " + duracaoMedia + " horas");
+      imprimeVoo.add(mediaDoPreco);
+
         System.out.println("\nMédia do preco: " + precoMedio + " reais");
+
+
+      gravaCSV("listaFinalDosVoos.csv", imprimeVoo);
     }
-  public void givenDataArray_whenConvertToCSV_thenOutputCreated() throws IOException {
-    File csvOutputFile = new File(CSV_FILE_NAME);
+
+
+
+  public static void gravaCSV(String nomeArquivo, List<String> dataLines) throws IOException {
+    File csvOutputFile = new File(CSV_FILE_NAME+nomeArquivo);
     try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
-      dataLines.stream()
-              .map(this::convertToCSV)
-              .forEach(pw::println);
+        dataLines.forEach(pw::println);
     }
-    assertTrue(csvOutputFile.exists());
+     assertTrue(csvOutputFile.exists());
   }
+
+//    public String convertToCSV(Stream<String> data) {
+//        return data
+//                .map(this::escapeSpecialCharacters)
+//                .collect(Collectors.joining(""));
+//    }
+//
+//    public String escapeSpecialCharacters(String data) {
+//        String escapedData = data.replaceAll("\\R", " ");
+//        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+//            data = data.replace("\"", "\"\"");
+//            escapedData = "\"" + data + "\"";
+//        }
+//        return escapedData;
+//    }
 }
