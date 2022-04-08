@@ -41,7 +41,6 @@ public class FlightInformationsApplication {
 
 
 
-
         List<Voo> voosOrigemDestino =
                 voos.stream()
                         .filter(voo -> Objects.equals(voo.getOrigem(), "GRU-Brasil"))
@@ -53,17 +52,8 @@ public class FlightInformationsApplication {
 //        System.out.println(voosOrigemDestino);
 
         voosOrigemDestino.forEach(System.out::println);
+ //      voosOrigemDestino.forEach(Voo::calculaDuracao);
 
-//        System.out.println("\n\n------------- teste metodo calcula duracao---------------");
-       voosOrigemDestino.forEach(Voo::calculaDuracao);
-
-//        System.out.println("\n------------- teste metodo calcula duracao media---------------");
-
-        //System.out.println("Voo mais rapido");
-
-//        for(int i = 0; i < voosOrigemDestino.size(); i++){
-//            System.out.println(voosOrigemDestino);
-//        }
 
 
         //chamando voo mais rapido
@@ -76,11 +66,11 @@ public class FlightInformationsApplication {
 
         imprimeVoo.add(vooMaisRapido.orElse(null).toString());
 
-        System.out.println("\nPrintando vooMaisRapido:");
+        System.out.println("\nO voo Mais Rapido e:");
         System.out.println(vooMaisRapido.orElse(null));
 //        System.out.println("\nPrintando vooTeste:");
 //        System.out.println(vooTeste.toString());
-      System.out.println("\nPrintando duracao voo mais rapido");
+      System.out.println("\nA duracao voo mais rapido");
         System.out.println(vooMaisRapido.map(Voo::getDuracao).orElse(null));
 
 //pra cima daqui é voo mais curto
@@ -91,17 +81,18 @@ public class FlightInformationsApplication {
 
 
       System.out.println("\nO Voo mais longo nesse percurso é:");
-        System.out.println(vooMaisLongo);
+        System.out.println(vooMaisLongo.orElse(null));
 
-
+      System.out.println("\nA duracao voo mais longo");
+      System.out.println(vooMaisLongo.map(Voo::getDuracao).orElse(null));
 
       double duracaoMedia = voosOrigemDestino.stream()
               .mapToLong(Voo::calculaDuracao).average().getAsDouble();
 
-      String mediaDaDuracao = ("Média da duração:" + duracaoMedia + " horas");
+      String mediaDaDuracao = ("Média da duração dos voos:" + duracaoMedia + " horas");
       imprimeVoo.add(mediaDaDuracao);
 
-      System.out.println("\nMédia da duração: " + duracaoMedia + " horas");
+      System.out.printf("\nMédia da duração: %.2f horas", duracaoMedia);
 
         OptionalDouble preco = voosOrigemDestino.stream()
                 .mapToDouble(Voo::getPreco).average();
@@ -112,7 +103,7 @@ public class FlightInformationsApplication {
       String mediaDoPreco = ("Média da preco: " + duracaoMedia + " horas");
       imprimeVoo.add(mediaDoPreco);
 
-        System.out.println("\nMédia do preco: " + precoMedio + " reais");
+        System.out.printf("\nMédia dos preços: R$%.2f", precoMedio);
 
 
       gravaCSV("listaFinalDosVoos.csv", imprimeVoo);
