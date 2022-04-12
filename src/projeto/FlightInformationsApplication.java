@@ -1,24 +1,13 @@
 package projeto;
 
 
-import org.jetbrains.annotations.NotNull;
-
-import java.awt.*;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import static kotlin.test.AssertionsKt.assertTrue;
 
 public class FlightInformationsApplication {
 
@@ -26,6 +15,7 @@ public class FlightInformationsApplication {
 
   public static void main(String[] args) throws IOException {
       Voo vooObjeto = new Voo();
+
 
         List<Voo> voos = List.of(
                 new Voo("GRU-Brasil", "MEL-Austrália", "Gol Airlines", "13/04/2022 22:00:00 (-03:00)", "14/04/2022 08:00:00 (-11:00)", 3524.00),
@@ -36,6 +26,10 @@ public class FlightInformationsApplication {
                 new Voo("GRU-Brasil","LIS-Portugal","Emirates","11/04/2022 16:00:00 (-02:00)","12/04/2022 12:00:00 (-02:00)",4539.00),
                 new Voo("GRU-Brasil","KIN-Jamaica","LATAM Airlines","09/04/2022 07:00:00 (-12:00)","09/04/2022 18:00:00 (-05:00)",2006.00)
         );
+
+
+
+
 
         List<String> imprimeVoo = new ArrayList<>();
 
@@ -48,7 +42,11 @@ public class FlightInformationsApplication {
                         .sorted(Comparator.comparing(Voo::getPreco))
                                 .collect(Collectors.toList());
 
-
+//        List<Voo> voosOrigemDestino =
+//                voos.stream()
+//                        .sorted(Comparator.comparing(Voo::getOrigem))
+//                        .sorted(Comparator.comparing(Voo::getPreco))
+//                        .collect(Collectors.toList());
 //        System.out.println(voosOrigemDestino);
 
         voosOrigemDestino.forEach(System.out::println);
@@ -100,7 +98,7 @@ public class FlightInformationsApplication {
         double precoMedio = preco.getAsDouble();
 
 
-      String mediaDoPreco = ("Média da preco: " + duracaoMedia + " horas");
+      String mediaDoPreco = ("Média da preco: " + precoMedio + " reais");
       imprimeVoo.add(mediaDoPreco);
 
         System.out.printf("\nMédia dos preços: R$%.2f", precoMedio);
@@ -133,4 +131,32 @@ public class FlightInformationsApplication {
 //        }
 //        return escapedData;
 //    }
+
+//    public static void leCSV() throws IOException {
+//
+//        Reader reader = null;
+//        try {
+//            reader = Files.newBufferedReader(Paths.get(CSV_FILE_NAME));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        Path caminho = Path.of(CSV_FILE_NAME);
+//        //File csvReader = new File(String.valueOf(caminho));
+//
+//        List<Voo> voo = Files.readAllLines(caminho)
+//                .stream()
+//                .map(linha -> {String[] elementos = linha.split(";")
+//                    return new Voo(
+//                            elementos [0],//rigem
+//                            elementos [1],//destino
+//                            elementos [2],//companhia
+//                            elementos [3],//partida
+//                            elementos [4],//chegada
+//                            Arrays.stream(elementos).mapToLong(elementos) [5]//preco
+//
+//                    );
+//                });
+//    }
+
 }
+
