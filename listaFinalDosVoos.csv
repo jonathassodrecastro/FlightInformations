@@ -1,0 +1,4 @@
+Voo{origem='GRU-Brasil', destino='MEL-Austrália', companhia='Gol Airlines', partida=2022-04-13T22:00-03:00, chegada=2022-04-14T08:00-11:00, preco=3524.0}
+Optional[Voo{origem='GRU-Brasil', destino='MEL-Austrália', companhia='Lufthansa', partida=2022-04-10T14:00-07:00, chegada=2022-04-11T06:00+03:00, preco=4848.0}]
+Média da duração dos voos:12.666666666666666 horas
+Média da preco: 4100.0 reais
