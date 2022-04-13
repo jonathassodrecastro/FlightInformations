@@ -13,6 +13,11 @@ public class Voo {
     protected double preco;
     protected long duracao;
 
+    public Voo() {
+
+    }
+
+
     public String getOrigem() {
         return origem;
     }
@@ -57,23 +62,19 @@ public class Voo {
         this.duracao = duracao;
     }
 
-    public Voo(String origem, String destino, String companhia, String partida, String chegada, double preco) {
+
+
+    public Voo(String origem, String destino, String companhia, String partida, String chegada, double preco){
         this.origem = origem;
         this.destino = destino;
         this.companhia = companhia;
         this.partida = ZonedDateTime.parse(partida, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss '('zzz')'"));
         this.chegada = ZonedDateTime.parse(chegada, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss '('zzz')'"));
         this.preco = preco;
-        //this.duracao = this.partida.until(this.chegada, ChronoUnit.HOURS);
+        duracao = this.partida.until(this.chegada, ChronoUnit.HOURS);
+
     }
 
-    public Voo(){}
-
-//    public long calculaDuracao(ZonedDateTime partida, ZonedDateTime chegada){
-//        long duracao = 0L;
-//        duracao = partida.until(chegada, ChronoUnit.HOURS);
-//        return duracao;
-//    }
 
     @Override
     public String toString() {
@@ -87,7 +88,12 @@ public class Voo {
                 '}';
     }
 
+    public String converteParaCSV(){
+        String linhaCSV = this.origem+";"+this.destino+";"+this.companhia+";"+this.partida+";"+this.chegada
+                +";"+this.preco+";"+this.duracao;
 
+        return linhaCSV;
+    }
 
     public long calculaDuracao() {
         long duracao;
@@ -101,4 +107,7 @@ public class Voo {
 
        return this.duracao;
     }
+
+
+
 }
