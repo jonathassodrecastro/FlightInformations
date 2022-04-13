@@ -1,6 +1,11 @@
 package projeto;
 
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.naturalOrder;
+import static java.util.Map.*;
+import static java.util.stream.Collectors.averagingLong;
+import static java.util.stream.Collectors.groupingBy;
 import static org.junit.Assert.assertTrue;
 
 import java.io.*;
@@ -29,31 +34,99 @@ private static final String CSV_FILE_NAME = "C:\\Java\\FlightInformations\\diret
 //                new Voo("GRU-Brasil","KIN-Jamaica","LATAM Airlines","09/04/2022 07:00:00 (-12:00)","09/04/2022 18:00:00 (-05:00)",2006.00)
 //        );
 
-        Stream<Voo> voos = lerCSV("C:\\Java\\FlightInformations\\diretorio\\flights.csv");
+        Stream<Voo> voosSemOrdenacao = lerCSV("C:\\Java\\FlightInformations\\diretorio\\flights.csv");
 
 
-//        List<String> imprimeVoo = voos.sorted(Comparator.comparing(Voo::getOrigem))
-//                .map(Voo::converteParaCSV).collect(Collectors.toList());
-
-      List<String> imprimeVoo = voos.sorted(Comparator.comparing(Voo::getOrigem))
-        .sorted(Comparator.comparing(Voo::getDestino))
+//ordenando os campos por origem/destino e aí pelos outros campos
+      List<String> imprimeVoo = voosSemOrdenacao.sorted(comparing(Voo::getOrigem)
+                      .thenComparing(Voo::getDestino)
+                      .thenComparing(Voo::getDuracao)
+                      .thenComparing(Voo::getPreco)
+                      .thenComparing(Voo::getCompanhia))
               .map(Voo::converteParaCSV).collect(Collectors.toList());
 
-      
+      imprimeVoo.add(0, "origin;destination;airline;departure;arrival;price;time");
 
-//      assert false;
       gravaCSV("primeiroArquivo.csv", imprimeVoo);
+//leitura para o segundo arquivo
+      Stream<Voo> voosOrdenados = lerCSV("C:\\Java\\FlightInformations\\diretorio\\flights.csv");
+//ordenacao igual ao primeiro arquivo
+     List<Voo> voos = voosOrdenados.sorted(comparing(Voo::getOrigem)
+             .thenComparing(Voo::getDestino)
+             .thenComparing(Voo::getDuracao)
+             .thenComparing(Voo::getPreco)
+             .thenComparing(Voo::getCompanhia)).collect(Collectors.toList());
+
+//     Map<String, SumarizacaoVoos> voosSumarizados = voos.stream()
+//             .sorted(Comparator.comparing(Voo::getOrigem))
+//             .collect(groupingBy(Voo::getOrigem))
+//             .entrySet()
+//             .stream()
+//             .map(entry -> mapToSumarizador(entry))
+//             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+//            ;
+//      List<String> voosSumarizaArquivo = voosSumarizados.values().stream().map(Objects::toString).collect(Collectors.toList());
+//Os elementos continuam na ordem que são inseridos
+      Set<String> voosSumarizaArquivo = new LinkedHashSet<>();
+//adiciona cabeçalho
+      voosSumarizaArquivo.add("origin;destination;shortest_flight(h);longest_fight(h);cheapest_flight;" +
+              "most_expensive_flight;average_time;average_price");
+
+      assert false;
+      for(Voo voo: voos.stream()
+             .sorted(comparing(Voo::getOrigem)
+                     .thenComparing(Voo::getDestino))
+             .collect(Collectors.toList()))
+     {
+         voosSumarizaArquivo.add(
+                 voo.getOrigem()+";"+voo.getDestino()+";"
+                 //voo mais curto
+                 +voos.parallelStream()
+                         .filter(origem -> origem.getOrigem().equals(voo.getOrigem()))
+                         .filter(destino -> destino.getDestino().equals(voo.getDestino()))
+                         .map(Voo::getDuracao)
+                         .min(naturalOrder()).get() + ";"
+                 //voo mais longo
+                         +voos.parallelStream()
+                         .filter(origem -> origem.getOrigem().equals(voo.getOrigem()))
+                         .filter(destino -> destino.getDestino().equals(voo.getDestino()))
+                         .map(Voo::getDuracao)
+                         .max(naturalOrder()).get() + ";"
+                 //voo mais barato
+                         +voos.parallelStream()
+                         .filter(origem -> origem.getOrigem().equals(voo.getOrigem()))
+                         .filter(destino -> destino.getDestino().equals(voo.getDestino()))
+                         .map(Voo::getPreco)
+                         .min(naturalOrder()).get() + ";"
+                 //tempo medio
+                         +voos.parallelStream()
+                         .filter(origem -> origem.getOrigem().equals(voo.getOrigem()))
+                         .filter(destino -> destino.getDestino().equals(voo.getDestino()))
+                         .mapToDouble(Voo::getDuracao)
+                         .average().orElse(0)+ ";"
+                 //preco medio
+                         +voos.parallelStream()
+                         .filter(origem -> origem.getOrigem().equals(voo.getOrigem()))
+                         .filter(destino -> destino.getDestino().equals(voo.getDestino()))
+                         .mapToDouble(Voo::getPreco)
+                         .average().orElse(0)+ ";"
+
+         );
+
+         List<String> listaFinal = new ArrayList<>(voosSumarizaArquivo);
+         gravaCSV("segundoArquivo.csv", listaFinal);
+
+     }
+
+   //  List<String> voosSumarizaArquivo = voosSumarizados.values().stream().map(Objects::toString).collect(Collectors.toList());
 
 
-//        List<Voo> voosOrigemDestino =
-//                voos
-//                        .filter(voo -> Objects.equals(voo.getOrigem(), "GRU-Brasil"))
-//                        .filter(voo -> Objects.equals(voo.getDestino(), "MEL-Austrália"))
-//                        .sorted(Comparator.comparing(Voo::getPreco))
-//                                .collect(Collectors.toList());
-//
-//
-//        voosOrigemDestino.forEach(System.out::println);
+
+
+ //     gravaCSV("segundoArquivo.csv", imprimeVoosOrdenados);
+
+//      Optional<Voo> vooMaisRapido = voosOrdenados.min(comparing(Voo::getDuracao));
+//      imprimeVoosOrdenados.add(vooMaisRapido.orElse(null).toString());
 //
 //
 //
@@ -104,7 +177,27 @@ private static final String CSV_FILE_NAME = "C:\\Java\\FlightInformations\\diret
 //      gravaCSV("listaFinalDosVoos.csv", imprimeVoo);
     }
 
+public static Map.Entry<String, SumarizacaoVoos> mapToSumarizador(Map.Entry<String, List<Voo>> entry){
+      String origem = entry.getKey();
+      List<Voo> voos = entry.getValue();
 
+    Optional<Voo> calcVooMaisRapido = voos.stream().min(Comparator.comparing(Voo::getDuracao));
+    String vooMaisRapido = calcVooMaisRapido.toString();
+
+    Optional<Voo> calcVooMaisLongo = voos.stream().max(Comparator.comparing(Voo::getDuracao));
+    String vooMaisLongo = calcVooMaisLongo.toString();
+
+    Optional<Voo> calcVooMaisBarato = voos.stream().min(Comparator.comparing(Voo::getPreco));
+    String vooMaisBarato = calcVooMaisBarato.toString();
+
+    OptionalDouble calcDuracaoMedia = voos.stream().mapToLong(Voo::getDuracao).average();
+    double duracaoMedia = calcDuracaoMedia.getAsDouble();
+
+    OptionalDouble calcPrecoMedio = voos.stream().mapToDouble(Voo::getPreco).average();
+    double precoMedio = calcPrecoMedio.getAsDouble();
+
+    return Map.entry(origem, new SumarizacaoVoos(vooMaisRapido, vooMaisLongo, vooMaisBarato, duracaoMedia, precoMedio));
+}
 
   public static void gravaCSV(String nomeArquivo, List<String> dataLines) throws IOException {
     File csvOutputFile = new File(CSV_FILE_NAME+nomeArquivo);
